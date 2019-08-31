@@ -15,7 +15,7 @@ import com.sxq.rpc.service.HelloService;
 @SpringBootTest
 public class RpcClientTests {
 
-    private static Logger logger = LoggerFactory.getLogger(RpcClientTests.class);
+    private static final Logger logger = LoggerFactory.getLogger(RpcClientTests.class);
 
     @Autowired
     RpcInvoker rpcInvoker;

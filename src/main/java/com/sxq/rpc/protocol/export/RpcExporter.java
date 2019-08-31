@@ -22,7 +22,7 @@ import com.google.common.base.Throwables;
 
 @Service
 public class RpcExporter implements Exporter {
-    private static Logger logger = LoggerFactory.getLogger(RpcExporter.class);
+    private static final Logger logger = LoggerFactory.getLogger(RpcExporter.class);
 
     private static ExecutorService executorService
             = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors() * 2);
@@ -40,8 +40,11 @@ public class RpcExporter implements Exporter {
                             ObjectInputStream inputStream = new ObjectInputStream(socket.getInputStream());
                             try {
                                 String methodName = inputStream.readUTF();
+                                logger.info("<={}", methodName);
                                 Class<?>[] parameterTypes = (Class<?>[]) inputStream.readObject();
+                                logger.info("<={}", parameterTypes);
                                 Object[] args = (Object[]) inputStream.readObject();
+                                logger.info("<={}", args);
                                 ObjectOutput output = new ObjectOutputStream(socket.getOutputStream());
                                 try {
                                     Method method = service.getClass().getMethod(methodName, parameterTypes);
