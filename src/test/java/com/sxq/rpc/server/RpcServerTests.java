@@ -9,7 +9,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import com.sxq.rpc.protocol.export.RpcExporter;
-import com.sxq.rpc.service.HelloService;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -20,15 +19,12 @@ public class RpcServerTests {
     @Autowired
     RpcExporter rpcExporter;
 
-    @Autowired
-    HelloService helloService;
-
     @Test
     public void contextLoads() {
     }
 
     @Test
     public void exportTest() throws Exception {
-        rpcExporter.export(helloService, 8080);
+        rpcExporter.export(8080);
     }
 }

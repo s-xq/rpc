@@ -2,8 +2,8 @@ package com.sxq.rpc.protocol.export;
 
 import java.io.IOException;
 
-public interface Exporter<SERVICE> {
+public interface Exporter {
 
-    void export(SERVICE service, int port) throws IOException;
+    void export(int port) throws IOException;
 
 }

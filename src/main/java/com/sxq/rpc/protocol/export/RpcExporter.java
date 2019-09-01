@@ -35,7 +35,7 @@ public class RpcExporter implements Exporter {
     private RemotingCodec remotingCodec = new RemotingCodec();
 
     @Override
-    public void export(Object service, int port) throws IOException {
+    public void export(int port) throws IOException {
         ServerSocket serverSocket = new ServerSocket(port);
         while (true) {
             final Socket socket = serverSocket.accept();
