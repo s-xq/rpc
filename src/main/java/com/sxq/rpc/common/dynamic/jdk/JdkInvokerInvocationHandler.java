@@ -10,6 +10,7 @@ import org.slf4j.LoggerFactory;
 import com.google.common.base.Throwables;
 import com.sxq.rpc.common.IOUtil;
 import com.sxq.rpc.common.dynamic.InvokerInvocationHandler;
+import com.sxq.rpc.protocol.invoke.Invocation;
 import com.sxq.rpc.transport.client.RpcClient;
 
 /**
@@ -24,23 +25,34 @@ public class JdkInvokerInvocationHandler<T> implements InvokerInvocationHandler,
 
     private int port;
 
+    private Class<?> interfaceCls;
+
     /**
      * TODO 泛化，添加Exchanger层, private Exchanger exchanger
      *
+     * @param interfaceCls
      * @param host
      * @param port
      */
-    public JdkInvokerInvocationHandler(String host, int port) {
+    public JdkInvokerInvocationHandler(Class<?> interfaceCls, String host, int port) {
+        this.interfaceCls = interfaceCls;
         this.host = host;
         this.port = port;
     }
 
     @Override
     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
+        Invocation invocation = new Invocation();
+        invocation.setInterfaceCls(interfaceCls.getCanonicalName());
+        invocation.setMethodName(method.getName());
+        String[] parameterTypes = new String[method.getParameterTypes().length];
+        for (int index = 0; index < method.getParameterTypes().length; index++) {
+            parameterTypes[index] = method.getParameterTypes()[index].getCanonicalName();
+        }
+        invocation.setParameterTypes(parameterTypes);
+        invocation.setArgs(args);
         RpcClient rpcClient = new RpcClient(host, port);
-        rpcClient.send(method.getName());
-        rpcClient.send(method.getParameterTypes());
-        rpcClient.send(args);
+        rpcClient.send(invocation);
         /**
          * TODO InvokeFuture or Callback
          */

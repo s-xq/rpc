@@ -16,9 +16,7 @@ public interface Channel {
      */
     InputStream getInputStream() throws IOException;
 
-    void writeAndFlush(Object data);
-
-    void writeAndFlush(String data);
+    void writeAndFlush(byte[] data);
 
     /**
      * todo receive

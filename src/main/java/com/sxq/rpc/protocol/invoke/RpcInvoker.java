@@ -28,7 +28,8 @@ public class RpcInvoker implements Invoker {
      */
     @Override
     public <T> T invoke(Class<T> interfaceClass, String host, int port) {
-        JdkInvokerInvocationHandler invokerInvocationHandler = new JdkInvokerInvocationHandler(host, port);
+        JdkInvokerInvocationHandler invokerInvocationHandler
+                = new JdkInvokerInvocationHandler(interfaceClass, host, port);
         JdkDynamicProxyFactory jdkDynamicProxyFactory = new JdkDynamicProxyFactory();
         return jdkDynamicProxyFactory.getProxy(interfaceClass, invokerInvocationHandler);
     }

@@ -6,6 +6,8 @@ import java.net.Socket;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.sxq.rpc.common.TypeUtil;
+import com.sxq.rpc.serliaze.RemotingCodec;
 import com.sxq.rpc.transport.channel.Channel;
 import com.sxq.rpc.transport.channel.impl.SocketChannel;
 
@@ -20,6 +22,7 @@ public class RpcClient implements Client {
     private String host;
     private int port;
     private Channel channel;
+    private RemotingCodec remotingCodec;
 
     public RpcClient(String host, int port) throws IOException {
         this.host = host;
@@ -29,6 +32,7 @@ public class RpcClient implements Client {
 
     private void init() throws IOException {
         reconnect(this.host, this.port);
+        remotingCodec = new RemotingCodec();
         if (channel == null) {
             /**
              * TODO handle connect fail
@@ -43,25 +47,11 @@ public class RpcClient implements Client {
      */
     @Override
     public void send(Object data) {
-        logger.info("=>{}", data);
-        if (data instanceof String) {
-            /**
-             * TODO handle data type in
-             * {@link Channel#writeAndFlush(String)} -> {@link java.io.ObjectOutputStream#writeUTF(String)}
-             * {@link Channel#writeAndFlush(Object)} -> {@link java.io.ObjectOutputStream#writeObject(Object)}
-             *
-             * for all, change to byte[] data and add codec
-             */
-            this.channel.writeAndFlush((String) data);
-        } else {
-            this.channel.writeAndFlush(data);
-        }
+        byte[] encodedData = remotingCodec.encode(data);
+        this.channel.writeAndFlush((TypeUtil.toByteArr(encodedData.length)));
+        logger.info("=>[{}]{}", encodedData.length, data);
+        this.channel.writeAndFlush(encodedData);
     }
-
-    //    public void send(String data) {
-    //        logger.info("=>{}", data);
-    //        this.channel.writeAndFlush(data);
-    //    }
 
     @Override
     public Channel reconnect(String host, int port) throws IOException {

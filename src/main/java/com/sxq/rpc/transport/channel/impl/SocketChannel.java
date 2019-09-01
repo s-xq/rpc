@@ -2,7 +2,7 @@ package com.sxq.rpc.transport.channel.impl;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.ObjectOutputStream;
+import java.io.OutputStream;
 import java.net.Socket;
 
 import org.slf4j.Logger;
@@ -22,26 +22,17 @@ public class SocketChannel implements Channel {
 
     private Socket socket;
 
-    private ObjectOutputStream outputStream;
+    private OutputStream outputStream;
 
     public SocketChannel(Socket socket) throws IOException {
         this.socket = socket;
-        this.outputStream = new ObjectOutputStream(socket.getOutputStream());
+        this.outputStream = socket.getOutputStream();
     }
 
     @Override
-    public void writeAndFlush(Object data) {
+    public void writeAndFlush(byte[] data) {
         try {
-            this.outputStream.writeObject(data);
-        } catch (Throwable throwable) {
-            logger.error(Throwables.getStackTraceAsString(throwable));
-        }
-    }
-
-    @Override
-    public void writeAndFlush(String data) {
-        try {
-            this.outputStream.writeUTF(data);
+            this.outputStream.write(data);
         } catch (Throwable throwable) {
             logger.error(Throwables.getStackTraceAsString(throwable));
         }

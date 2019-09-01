@@ -1,8 +1,7 @@
 package com.sxq.rpc.protocol.export;
 
 import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutput;
+import java.io.InputStream;
 import java.io.ObjectOutputStream;
 import java.lang.reflect.Method;
 import java.net.ServerSocket;
@@ -15,6 +14,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import com.google.common.base.Throwables;
+import com.sxq.rpc.common.TypeUtil;
+import com.sxq.rpc.protocol.invoke.Invocation;
+import com.sxq.rpc.serliaze.RemotingCodec;
+import com.sxq.rpc.service.impl.HelloServiceImpl;
 
 /**
  * Created by s-xq on 2019-08-31.
@@ -27,28 +30,50 @@ public class RpcExporter implements Exporter {
     private static ExecutorService executorService
             = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors() * 2);
 
+    private RemotingCodec remotingCodec = new RemotingCodec();
+
     @Override
     public void export(Object service, int port) throws IOException {
         ServerSocket serverSocket = new ServerSocket(port);
         while (true) {
             final Socket socket = serverSocket.accept();
+            logger.info("socket accept...");
             executorService.submit(new Runnable() {
                 @Override
                 public void run() {
                     try {
                         try {
-                            ObjectInputStream inputStream = new ObjectInputStream(socket.getInputStream());
+                            logger.info("start read...");
+                            InputStream inputStream = socket.getInputStream();
                             try {
-                                String methodName = inputStream.readUTF();
-                                logger.info("<={}", methodName);
-                                Class<?>[] parameterTypes = (Class<?>[]) inputStream.readObject();
-                                logger.info("<={}", parameterTypes);
-                                Object[] args = (Object[]) inputStream.readObject();
-                                logger.info("<={}", args);
-                                ObjectOutput output = new ObjectOutputStream(socket.getOutputStream());
+                                byte[] dataLengthByte = new byte[4];
+                                inputStream.read(dataLengthByte, 0, 4);
+                                int dataLength = TypeUtil.toInt(dataLengthByte);
+                                logger.info("dataLength:[{}]{}", dataLength, dataLengthByte);
+                                byte[] data = new byte[dataLength];
+                                inputStream.read(data, 0, dataLength);
+                                logger.info("data:{}", data);
+                                Invocation invocation = remotingCodec.decode(data, Invocation.class);
+                                ObjectOutputStream output = new ObjectOutputStream(socket.getOutputStream());
                                 try {
-                                    Method method = service.getClass().getMethod(methodName, parameterTypes);
-                                    Object result = method.invoke(service, args);
+                                    Class<?> interfaceCls = Class.forName(invocation.getInterfaceCls());
+                                    /**
+                                     * TODO mapping {@link com.sxq.rpc.service.HelloService} to {@link HelloServiceImpl}
+                                     */
+                                    interfaceCls = HelloServiceImpl.class;
+                                    Object instance = interfaceCls.getConstructor().newInstance();
+                                    Class<?>[] parameterTypes = new Class<?>[invocation.getParameterTypes().length];
+                                    for (int index = 0; index < invocation.getParameterTypes().length; index++) {
+                                        parameterTypes[index] = Class.forName(invocation.getParameterTypes()[index]);
+                                    }
+                                    Method method =
+                                            interfaceCls.getDeclaredMethod(invocation.getMethodName(), parameterTypes);
+                                    //                                    Method method = service.getClass()
+                                    //                                    .getMethod(invocation.getMethodName(),
+                                    //                                            invocation.getParameterTypes());
+                                    Object result = method.invoke(instance, invocation.getArgs());
+                                    //                                    Object result = method.invoke(service,
+                                    //                                    invocation.getArgs());
                                     output.writeObject(result);
                                 } catch (Throwable throwable) {
                                     output.writeObject(throwable);
