@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 
 import com.google.common.base.Throwables;
 import com.sxq.rpc.common.ClassUtil;
+import com.sxq.rpc.common.ReflectionUtil;
 import com.sxq.rpc.common.TypeUtil;
 import com.sxq.rpc.protocol.invoke.Invocation;
 import com.sxq.rpc.serliaze.RemotingCodec;
@@ -58,7 +59,7 @@ public class RpcExporter implements Exporter {
                                 Invocation invocation = remotingCodec.decode(data, Invocation.class);
                                 ObjectOutputStream output = new ObjectOutputStream(socket.getOutputStream());
                                 try {
-                                    Class<?> interfaceCls = Class.forName(invocation.getInterfaceCls());
+                                    Class<?> interfaceCls = ReflectionUtil.getClass(invocation.getInterfaceCls());
                                     List interfaceImplClss = ClassUtil.getAllClassByInterface(interfaceCls);
                                     /**
                                      * mapping {@link com.sxq.rpc.service.HelloService} to {@link HelloServiceImpl}
@@ -68,11 +69,12 @@ public class RpcExporter implements Exporter {
                                     Object instance = interfaceImplCls.getConstructor().newInstance();
                                     Class<?>[] parameterTypes = new Class<?>[invocation.getParameterTypes().length];
                                     for (int index = 0; index < invocation.getParameterTypes().length; index++) {
-                                        parameterTypes[index] = Class.forName(invocation.getParameterTypes()[index]);
+                                        parameterTypes[index]
+                                                = ReflectionUtil.getClass(invocation.getParameterTypes()[index]);
                                     }
-                                    Method method = interfaceImplCls.getDeclaredMethod(invocation.getMethodName(),
-                                            parameterTypes);
-                                    Object result = method.invoke(instance, invocation.getArgs());
+                                    Method method = ReflectionUtil.method(
+                                            interfaceCls, invocation.getMethodName(), parameterTypes);
+                                    Object result = ReflectionUtil.invoke(method, instance, invocation.getArgs());
                                     output.writeObject(result);
                                 } catch (Throwable throwable) {
                                     output.writeObject(throwable);
