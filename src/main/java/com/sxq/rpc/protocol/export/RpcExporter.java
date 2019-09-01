@@ -6,6 +6,7 @@ import java.io.ObjectOutputStream;
 import java.lang.reflect.Method;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -14,6 +15,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import com.google.common.base.Throwables;
+import com.sxq.rpc.common.ClassUtil;
 import com.sxq.rpc.common.TypeUtil;
 import com.sxq.rpc.protocol.invoke.Invocation;
 import com.sxq.rpc.serliaze.RemotingCodec;
@@ -57,23 +59,20 @@ public class RpcExporter implements Exporter {
                                 ObjectOutputStream output = new ObjectOutputStream(socket.getOutputStream());
                                 try {
                                     Class<?> interfaceCls = Class.forName(invocation.getInterfaceCls());
+                                    List interfaceImplClss = ClassUtil.getAllClassByInterface(interfaceCls);
                                     /**
-                                     * TODO mapping {@link com.sxq.rpc.service.HelloService} to {@link HelloServiceImpl}
+                                     * mapping {@link com.sxq.rpc.service.HelloService} to {@link HelloServiceImpl}
                                      */
-                                    interfaceCls = HelloServiceImpl.class;
-                                    Object instance = interfaceCls.getConstructor().newInstance();
+                                    Class<?> interfaceImplCls = (Class<?>) interfaceImplClss.get(0); // must cast
+                                    logger.info("interface impl:{}", interfaceImplClss);
+                                    Object instance = interfaceImplCls.getConstructor().newInstance();
                                     Class<?>[] parameterTypes = new Class<?>[invocation.getParameterTypes().length];
                                     for (int index = 0; index < invocation.getParameterTypes().length; index++) {
                                         parameterTypes[index] = Class.forName(invocation.getParameterTypes()[index]);
                                     }
-                                    Method method =
-                                            interfaceCls.getDeclaredMethod(invocation.getMethodName(), parameterTypes);
-                                    //                                    Method method = service.getClass()
-                                    //                                    .getMethod(invocation.getMethodName(),
-                                    //                                            invocation.getParameterTypes());
+                                    Method method = interfaceImplCls.getDeclaredMethod(invocation.getMethodName(),
+                                            parameterTypes);
                                     Object result = method.invoke(instance, invocation.getArgs());
-                                    //                                    Object result = method.invoke(service,
-                                    //                                    invocation.getArgs());
                                     output.writeObject(result);
                                 } catch (Throwable throwable) {
                                     output.writeObject(throwable);

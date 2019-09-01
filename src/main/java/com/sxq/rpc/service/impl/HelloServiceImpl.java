@@ -15,6 +15,9 @@ public class HelloServiceImpl implements HelloService {
 
     private Logger logger = LoggerFactory.getLogger(HelloServiceImpl.class);
 
+    public HelloServiceImpl() {
+    }
+
     @Override
     public String hello(String userName) {
         logger.info("from {}", userName);
