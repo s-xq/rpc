@@ -16,10 +16,20 @@ public class RpcInvoker implements Invoker {
 
     private static final Logger logger = LoggerFactory.getLogger(RpcInvoker.class);
 
+    /**
+     * create service stub
+     *
+     * @param interfaceClass
+     * @param host
+     * @param port
+     * @param <T>
+     *
+     * @return
+     */
     @Override
-    public <REQ, RES> RES invoke(Class<REQ> interfaceClass, String host, int port) {
+    public <T> T invoke(Class<T> interfaceClass, String host, int port) {
         JdkInvokerInvocationHandler invokerInvocationHandler = new JdkInvokerInvocationHandler(host, port);
         JdkDynamicProxyFactory jdkDynamicProxyFactory = new JdkDynamicProxyFactory();
-        return (RES) jdkDynamicProxyFactory.getProxy(interfaceClass, invokerInvocationHandler);
+        return jdkDynamicProxyFactory.getProxy(interfaceClass, invokerInvocationHandler);
     }
 }
