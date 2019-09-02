@@ -14,6 +14,6 @@ public abstract class Packet {
 
     public abstract long bodyLength();
 
-    public abstract byte [] body();
+    public abstract byte[] body();
 
 }

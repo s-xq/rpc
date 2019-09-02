@@ -4,10 +4,10 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class RpcApplication {
+public class RpcCoreApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(RpcApplication.class, args);
+        SpringApplication.run(RpcCoreApplication.class, args);
     }
 
 }

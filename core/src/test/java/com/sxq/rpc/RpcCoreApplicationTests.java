@@ -10,7 +10,7 @@ import com.sxq.rpc.common.TypeUtil;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
-public class RpcApplicationTests {
+public class RpcCoreApplicationTests {
 
     @Test
     public void contextLoads() {
@@ -23,4 +23,5 @@ public class RpcApplicationTests {
         Assert.assertEquals(129, num);
 
     }
+
 }
