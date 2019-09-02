@@ -1,4 +1,4 @@
-package com.sxq.rpc.transport.channel.impl;
+package com.sxq.rpc.transport.socket;
 
 import java.io.IOException;
 import java.io.InputStream;

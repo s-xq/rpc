@@ -8,7 +8,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import com.sxq.rpc.transport.socket.RpcClient;
 import com.sxq.rpc.example.service.HelloService;
 import com.sxq.rpc.protocol.invoke.RpcInvoker;
 
@@ -22,7 +21,7 @@ public class RpcClientTests {
 
     @Before
     public void setUp() throws Exception {
-        rpcInvoker = new RpcInvoker(RpcClient.class);
+        rpcInvoker = new RpcInvoker();
     }
 
     @Test

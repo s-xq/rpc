@@ -8,6 +8,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.common.base.Throwables;
+import com.sxq.rpc.common.ClassUtil;
 import com.sxq.rpc.common.IOUtil;
 import com.sxq.rpc.common.dynamic.InvokerInvocationHandler;
 import com.sxq.rpc.protocol.invoke.Invocation;
@@ -17,7 +18,7 @@ import com.sxq.rpc.transport.client.Client;
  * Created by s-xq on 2019-08-31.
  * TODO:泛化
  */
-public class JdkInvokerInvocationHandler<T> implements InvokerInvocationHandler, InvocationHandler {
+public class JdkInvokerInvocationHandler implements InvokerInvocationHandler, InvocationHandler {
 
     private static final Logger logger = LoggerFactory.getLogger(JdkInvokerInvocationHandler.class);
 
@@ -27,8 +28,6 @@ public class JdkInvokerInvocationHandler<T> implements InvokerInvocationHandler,
 
     private Class<?> interfaceCls;
 
-    private Class<Client> clientClass;
-
     /**
      * TODO 泛化，添加Exchanger层, private Exchanger exchanger
      *
@@ -36,11 +35,10 @@ public class JdkInvokerInvocationHandler<T> implements InvokerInvocationHandler,
      * @param host
      * @param port
      */
-    public JdkInvokerInvocationHandler(Class<?> interfaceCls, String host, int port, Class<Client> clientClass) {
+    public JdkInvokerInvocationHandler(Class<?> interfaceCls, String host, int port) {
         this.interfaceCls = interfaceCls;
         this.host = host;
         this.port = port;
-        this.clientClass = clientClass;
     }
 
     @Override
@@ -55,9 +53,11 @@ public class JdkInvokerInvocationHandler<T> implements InvokerInvocationHandler,
         invocation.setParameterTypes(parameterTypes);
         invocation.setArgs(args);
         /**
-         * TODO refactor this{@link RpcClient}
+         * TODO add config of autowaired {@link Client}
          */
-        Client rpcClient = clientClass.getConstructor(String.class, int.class).newInstance(host, port);
+        Class<Client> clientClass = ClassUtil.getAllClassByInterface(Client.class).get(0);
+        Client rpcClient = clientClass.getConstructor().newInstance();
+        rpcClient.reconnect(host, port);
         rpcClient.send(invocation);
         /**
          * TODO InvokeFuture or Callback

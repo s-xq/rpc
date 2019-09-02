@@ -6,7 +6,6 @@ import org.springframework.stereotype.Service;
 
 import com.sxq.rpc.common.dynamic.jdk.JdkDynamicProxyFactory;
 import com.sxq.rpc.common.dynamic.jdk.JdkInvokerInvocationHandler;
-import com.sxq.rpc.transport.client.Client;
 
 /**
  * Created by s-xq on 2019-08-31.
@@ -16,15 +15,6 @@ import com.sxq.rpc.transport.client.Client;
 public class RpcInvoker implements Invoker {
 
     private static final Logger logger = LoggerFactory.getLogger(RpcInvoker.class);
-
-    /**
-     * TODO delete this field, autowired
-     */
-    private Class<?> clientClass;
-
-    public RpcInvoker(Class<?> clientClass) {
-        this.clientClass = clientClass;
-    }
 
     /**
      * create service stub
@@ -39,7 +29,7 @@ public class RpcInvoker implements Invoker {
     @Override
     public <T> T invoke(Class<T> interfaceClass, String host, int port) {
         JdkInvokerInvocationHandler invokerInvocationHandler
-                = new JdkInvokerInvocationHandler(interfaceClass, host, port, clientClass);
+                = new JdkInvokerInvocationHandler(interfaceClass, host, port);
         JdkDynamicProxyFactory jdkDynamicProxyFactory = new JdkDynamicProxyFactory();
         return jdkDynamicProxyFactory.getProxy(interfaceClass, invokerInvocationHandler);
     }

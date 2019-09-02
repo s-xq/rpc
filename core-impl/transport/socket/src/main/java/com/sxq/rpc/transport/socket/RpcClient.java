@@ -9,7 +9,6 @@ import org.slf4j.LoggerFactory;
 import com.sxq.rpc.common.TypeUtil;
 import com.sxq.rpc.serliaze.RemotingCodec;
 import com.sxq.rpc.transport.channel.Channel;
-import com.sxq.rpc.transport.channel.impl.SocketChannel;
 import com.sxq.rpc.transport.client.Client;
 
 /**
@@ -23,23 +22,7 @@ public class RpcClient implements Client {
     private String host;
     private int port;
     private Channel channel;
-    private RemotingCodec remotingCodec;
-
-    public RpcClient(String host, int port) throws IOException {
-        this.host = host;
-        this.port = port;
-        init();
-    }
-
-    private void init() throws IOException {
-        reconnect(this.host, this.port);
-        remotingCodec = new RemotingCodec();
-        if (channel == null) {
-            /**
-             * TODO handle connect fail
-             */
-        }
-    }
+    private RemotingCodec remotingCodec = new RemotingCodec();
 
     /**
      * send data
@@ -74,6 +57,7 @@ public class RpcClient implements Client {
      *
      * @return
      */
+    @Override
     public Channel channel() {
         return channel;
     }
