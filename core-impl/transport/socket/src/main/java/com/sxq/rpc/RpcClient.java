@@ -1,4 +1,4 @@
-package com.sxq.rpc.transport.client;
+package com.sxq.rpc;
 
 import java.io.IOException;
 import java.net.Socket;
@@ -10,6 +10,7 @@ import com.sxq.rpc.common.TypeUtil;
 import com.sxq.rpc.serliaze.RemotingCodec;
 import com.sxq.rpc.transport.channel.Channel;
 import com.sxq.rpc.transport.channel.impl.SocketChannel;
+import com.sxq.rpc.transport.client.Client;
 
 /**
  * Created by s-xq on 2019-08-31.

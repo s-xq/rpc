@@ -1,4 +1,4 @@
-package com.sxq.rpc.transport.server;
+package com.sxq.rpc;
 
 /**
  * Created by s-xq on 2019-08-31.

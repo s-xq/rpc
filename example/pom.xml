@@ -20,7 +20,7 @@
     <dependencies>
         <dependency>
             <groupId>com.sxq</groupId>
-            <artifactId>rpc-core</artifactId>
+            <artifactId>rpc-all</artifactId>
             <version>0.0.1-SNAPSHOT</version>
         </dependency>
     </dependencies>

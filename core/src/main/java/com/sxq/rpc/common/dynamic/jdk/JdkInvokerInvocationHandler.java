@@ -11,7 +11,7 @@ import com.google.common.base.Throwables;
 import com.sxq.rpc.common.IOUtil;
 import com.sxq.rpc.common.dynamic.InvokerInvocationHandler;
 import com.sxq.rpc.protocol.invoke.Invocation;
-import com.sxq.rpc.transport.client.RpcClient;
+import com.sxq.rpc.transport.client.Client;
 
 /**
  * Created by s-xq on 2019-08-31.
@@ -27,6 +27,8 @@ public class JdkInvokerInvocationHandler<T> implements InvokerInvocationHandler,
 
     private Class<?> interfaceCls;
 
+    private Class<Client> clientClass;
+
     /**
      * TODO 泛化，添加Exchanger层, private Exchanger exchanger
      *
@@ -34,10 +36,11 @@ public class JdkInvokerInvocationHandler<T> implements InvokerInvocationHandler,
      * @param host
      * @param port
      */
-    public JdkInvokerInvocationHandler(Class<?> interfaceCls, String host, int port) {
+    public JdkInvokerInvocationHandler(Class<?> interfaceCls, String host, int port, Class<Client> clientClass) {
         this.interfaceCls = interfaceCls;
         this.host = host;
         this.port = port;
+        this.clientClass = clientClass;
     }
 
     @Override
@@ -51,7 +54,10 @@ public class JdkInvokerInvocationHandler<T> implements InvokerInvocationHandler,
         }
         invocation.setParameterTypes(parameterTypes);
         invocation.setArgs(args);
-        RpcClient rpcClient = new RpcClient(host, port);
+        /**
+         * TODO refactor this{@link RpcClient}
+         */
+        Client rpcClient = clientClass.getConstructor(String.class, int.class).newInstance(host, port);
         rpcClient.send(invocation);
         /**
          * TODO InvokeFuture or Callback

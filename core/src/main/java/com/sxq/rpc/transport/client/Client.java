@@ -11,4 +11,6 @@ public interface Client extends Closeable {
 
     void send(Object data);
 
+    Channel channel();
+
 }

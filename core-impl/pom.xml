@@ -15,6 +15,10 @@
 
     <packaging>pom</packaging>
 
+    <modules>
+        <module>transport</module>
+    </modules>
+
     <properties>
         <java.version>1.8</java.version>
     </properties>
