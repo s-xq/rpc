@@ -1,4 +1,4 @@
-package com.sxq.rpc;
+package com.sxq.rpc.transport.socket;
 
 import java.io.IOException;
 import java.net.Socket;

@@ -1,13 +1,13 @@
-package com.sxq.rpc;
+package com.sxq.rpc.transport.socket;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class NettyApplication {
+public class SocketApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(NettyApplication.class, args);
+        SpringApplication.run(SocketApplication.class, args);
     }
 
 }

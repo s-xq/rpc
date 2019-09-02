@@ -31,6 +31,9 @@ build/
 .vscode/
 
 ### log ###
-*/log/
+*.log
+*.error
+*.out
+
 
 *.DS_Store

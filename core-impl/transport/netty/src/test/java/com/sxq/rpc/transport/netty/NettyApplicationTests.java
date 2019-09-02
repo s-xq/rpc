@@ -1,4 +1,4 @@
-package com.sxq.rpc;
+package com.sxq.rpc.transport.netty;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -7,7 +7,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
-public class SocketApplicationTests {
+public class NettyApplicationTests {
 
     @Test
     public void contextLoads() {
