@@ -1,10 +1,10 @@
-package com.sxq.rpc.service.impl;
+package com.sxq.rpc.example.service.impl;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
-import com.sxq.rpc.service.HelloService;
+import com.sxq.rpc.example.service.HelloService;
 
 /**
  * Created by s-xq on 2019-08-31.

@@ -6,11 +6,11 @@
         <groupId>com.sxq</groupId>
         <artifactId>rpc-transport</artifactId>
         <version>0.0.1-SNAPSHOT</version>
-        <relativePath/> <!-- lookup parent from repository -->
+        <relativePath>../pom.xml</relativePath><!-- lookup parent from repository -->
     </parent>
     <artifactId>transport-netty</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>${artifactId}</name>
+    <name>${project.artifactId}</name>
     <description>transport-netty</description>
 
     <properties>

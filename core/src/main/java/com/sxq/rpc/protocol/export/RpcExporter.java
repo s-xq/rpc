@@ -12,7 +12,6 @@ import java.util.concurrent.Executors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Service;
 
 import com.google.common.base.Throwables;
 import com.sxq.rpc.common.ClassUtil;
@@ -20,13 +19,11 @@ import com.sxq.rpc.common.ReflectionUtil;
 import com.sxq.rpc.common.TypeUtil;
 import com.sxq.rpc.protocol.invoke.Invocation;
 import com.sxq.rpc.serliaze.RemotingCodec;
-import com.sxq.rpc.service.impl.HelloServiceImpl;
 
 /**
  * Created by s-xq on 2019-08-31.
  */
 
-@Service
 public class RpcExporter implements Exporter {
     private static final Logger logger = LoggerFactory.getLogger(RpcExporter.class);
 
@@ -62,7 +59,8 @@ public class RpcExporter implements Exporter {
                                     Class<?> interfaceCls = ReflectionUtil.getClass(invocation.getInterfaceCls());
                                     List interfaceImplClss = ClassUtil.getAllClassByInterface(interfaceCls);
                                     /**
-                                     * mapping {@link com.sxq.rpc.service.HelloService} to {@link HelloServiceImpl}
+                                     * mapping {@link com.sxq.rpc.example.service.HelloService} to
+                                     * {@link HelloServiceImpl}
                                      */
                                     Class<?> interfaceImplCls = (Class<?>) interfaceImplClss.get(0); // must cast
                                     logger.info("interface impl:{}", interfaceImplClss);

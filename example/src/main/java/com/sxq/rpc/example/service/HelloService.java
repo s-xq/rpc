@@ -1,4 +1,4 @@
-package com.sxq.rpc.service;
+package com.sxq.rpc.example.service;
 
 /**
  * Created by s-xq on 2019-08-31.

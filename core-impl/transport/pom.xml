@@ -6,13 +6,14 @@
         <groupId>com.sxq</groupId>
         <artifactId>core-impl</artifactId>
         <version>0.0.1-SNAPSHOT</version>
-        <relativePath/> <!-- lookup parent from repository -->
+        <relativePath>../pom.xml</relativePath> <!-- lookup parent from repository -->
     </parent>
     <artifactId>rpc-transport</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>${artifactId}</name>
+    <name>${project.artifactId}</name>
     <description>rpc-transport-impl</description>
 
+    <packaging>pom</packaging>
     <properties>
     </properties>
 
